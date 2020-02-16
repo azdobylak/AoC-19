@@ -1,4 +1,3 @@
-
 import org.scalatest._
 import day02.Day02
 

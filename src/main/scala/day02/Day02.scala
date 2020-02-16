@@ -15,14 +15,14 @@ object Day02
     }
 
     def main(args: Array[String]): Unit = {
-        val resultPuzzle1 = solve_first(readInput(inputPath))
-        println(resultPuzzle1.mkString(", "))
+        val input = readInput(inputPath)
+        input(1) = 12
+        input(2) = 2
+        println(solve_first(input).mkString(", "))
         println(solve_second(readInput(inputPath), 19690720))
     }
 
     def solve_first(input: Array[Int]): Array[Int] = {
-        input(1) = 12
-        input(2) = 2
         processCodes(input)
     }
 
