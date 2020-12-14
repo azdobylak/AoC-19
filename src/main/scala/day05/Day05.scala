@@ -17,16 +17,20 @@ object Day05
 
     def main(args: Array[String]): Unit = {
         val input = readInput(inputPath)
-        println(solve_first(1, input).mkString(", "))
+        println(solve_first(1, input))
         //println(solve_second(readInput(inputPath), 19690720))
     }
 
-    def solve_first(input: Int, program: Array[Int]): Seq[Int] = {
+    def solve_first(input: Int, program: Array[Int]): Int = {
         processCodes(input, program)
     }
 
-    private[this] def processCodes(input: Int, codes: Array[Int]) : Seq[Int] = {
-        var output = new ListBuffer[Int]()
+    def solve_second(input: Int, program: Array[Int]): Int = {
+      processCodes(input, program)
+    }
+
+    private[this] def processCodes(input: Int, codes: Array[Int]) : Int = {
+        var output: Int = 0;
         breakable
         {
           var optCodeIndx = 0
@@ -40,6 +44,8 @@ object Day05
               val indxShift = optCode match {
                 case 1 | 2 => 4
                 case 3 | 4 => 2
+                case 5 | 6 => 3
+                case 7 | 8 => 4
               }
 
               val positionModes: List[Boolean] = (instruction / 100).toString.reverse.padTo(3, '0').toList.slice(0, indxShift-1).map(
@@ -50,25 +56,44 @@ object Day05
                 }
               )
 
-              val a_ind: Int = codes(optCodeIndx + 1)
-              val b_ind: Int= codes(optCodeIndx + 2)
-              val outputIndex: Int = codes(optCodeIndx + 3)
+              //println(codes mkString ", ")
+              //println("index -> ", optCodeIndx)
+              //println("optCode -> ", optCode)
 
               val values = positionModes.slice(0, indxShift-1).zipWithIndex.map{ case (v, i) => {val indx = codes(optCodeIndx+1+i); if(v) codes(indx) else indx}}
 
-              if (optCode == 4)
-                output += values(0)
+              var jump = false
+
+              if (optCode == 5 || optCode == 6)
+              {
+                jump = optCode match {
+                  case 5 => values(0) != 0
+                  case 6 => values(0) == 0
+                }
+                if (jump)
+                  optCodeIndx = values(1)
+
+              }
+              else if (optCode == 7)
+                codes(values(2)) = if(values(0) < values(1)) 1 else 0
+              else if (optCode == 8)
+                codes(values(2)) = if(values(0) == values(1)) 1 else 0
+              else if (optCode == 4)
+                output = values(0)
               else if (optCode == 3)
-                codes(a_ind) = input
+              {
+                codes(codes(optCodeIndx+1)) = input
+              }
               else
-                codes(outputIndex) = optCode match {
+                codes(codes(optCodeIndx+3)) = optCode match {
                     case 1 => values(0) + values(1)
                     case 2 => values(0) * values(1)
                 }
 
-              optCodeIndx = optCodeIndx + indxShift
+              if (!jump)
+                optCodeIndx = optCodeIndx + indxShift
           }
         }
-        output.toList
+        output
     }
 }
