@@ -17,8 +17,8 @@ object Day05
 
     def main(args: Array[String]): Unit = {
         val input = readInput(inputPath)
-        println(solve_first(1, input))
-        //println(solve_second(readInput(inputPath), 19690720))
+        println(solve_first(1, input.clone()))
+        println(solve_second(5, input.clone()))
     }
 
     def solve_first(input: Int, program: Array[Int]): Int = {
@@ -56,10 +56,6 @@ object Day05
                 }
               )
 
-              //println(codes mkString ", ")
-              //println("index -> ", optCodeIndx)
-              //println("optCode -> ", optCode)
-
               val values = positionModes.slice(0, indxShift-1).zipWithIndex.map{ case (v, i) => {val indx = codes(optCodeIndx+1+i); if(v) codes(indx) else indx}}
 
               var jump = false
@@ -75,9 +71,11 @@ object Day05
 
               }
               else if (optCode == 7)
-                codes(values(2)) = if(values(0) < values(1)) 1 else 0
+                codes(codes(optCodeIndx+3)) = if(values(0) < values(1)) 1 else 0
               else if (optCode == 8)
-                codes(values(2)) = if(values(0) == values(1)) 1 else 0
+              {
+                codes(codes(optCodeIndx+3)) = if(values(0) == values(1)) 1 else 0
+              }
               else if (optCode == 4)
                 output = values(0)
               else if (optCode == 3)
