@@ -4,6 +4,7 @@ import java.net.URL
 import scala.io.Source
 import scala.util.control.Breaks._
 import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.Queue
 
 
 object Day05
@@ -29,7 +30,11 @@ object Day05
       processCodes(input, program)
     }
 
-    private[this] def processCodes(input: Int, codes: Array[Int]) : Int = {
+    def processCodes(input: Int, codes: Array[Int]): Int = {
+      processCodes(Queue(input), codes)
+    }
+
+    def processCodes(input: Queue[Int], codes: Array[Int]) : Int = {
         var output: Int = 0;
         breakable
         {
@@ -80,7 +85,7 @@ object Day05
                 output = values(0)
               else if (optCode == 3)
               {
-                codes(codes(optCodeIndx+1)) = input
+                codes(codes(optCodeIndx+1)) = input.dequeue
               }
               else
                 codes(codes(optCodeIndx+3)) = optCode match {
